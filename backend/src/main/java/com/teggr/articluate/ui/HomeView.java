@@ -1,10 +1,13 @@
 package com.teggr.articluate.ui;
 
+import com.teggr.articluate.model.ArticleResponse;
+import dev.rebelcraft.j2html.spring.webmvc.J2HtmlView;
 import j2html.tags.DomContent;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
-import sh.rebelstack.j2html.engine.HtmlComponent;
-import sh.rebelstack.j2html.engine.HtmlTemplate;
-import sh.rebelstack.j2html.engine.RenderContext;
+
+import java.util.Map;
 
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxIndicator;
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxPost;
@@ -27,13 +30,16 @@ import static j2html.TagCreator.script;
 import static j2html.TagCreator.style;
 import static j2html.TagCreator.title;
 
-@Component
-@HtmlTemplate("ui/index")
-public class IndexTemplate implements HtmlComponent {
+@Component("homeView")
+public class HomeView extends J2HtmlView {
 
     @Override
-    public DomContent render(RenderContext ctx) {
-        String youtubeUrl = ctx.find("youtubeUrl", String.class).orElse("");
+    protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model,
+                                                           HttpServletRequest request,
+                                                           HttpServletResponse response) {
+        String youtubeUrl = (String) model.getOrDefault("youtubeUrl", "");
+        ArticleResponse article = (ArticleResponse) model.get("article");
+        String error = (String) model.get("error");
 
         return html(
                 head(
@@ -59,7 +65,7 @@ public class IndexTemplate implements HtmlComponent {
                                 p("Submit a YouTube URL to generate an article."),
                                 form().withMethod("post")
                                         .withAction("/")
-                                        .attr(hxPost("/"))
+                                        .attr(hxPost("/ui/articles"))
                                         .attr(hxTarget("#article-result"))
                                         .attr(hxSwap(innerHTML))
                                         .attr(hxIndicator("#loading-indicator"))
@@ -72,10 +78,9 @@ public class IndexTemplate implements HtmlComponent {
                                                         .withValue(youtubeUrl)
                                                         .isRequired(),
                                                 button("Generate article").withType("submit"),
-                                                div("Generating...").withId("loading-indicator")
-                                                        .withClasses("htmx-indicator")
+                                                div("Generating...").withId("loading-indicator").withClass("htmx-indicator")
                                         ),
-                                div(ctx.include("ui/result")).withId("article-result")
+                                UiRenderer.resultContainer(article, error)
                         )
                 )
         );

@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -30,31 +31,30 @@ class UiControllerTest {
     void getIndexReturnsIndexView() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("ui/index"))
+                .andExpect(view().name("homeView"))
                 .andExpect(model().attributeExists("youtubeUrl"));
     }
 
     @Test
     void postBlankUrlReturnsValidationError() throws Exception {
         mockMvc.perform(post("/")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("youtubeUrl", "   "))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ui/index"))
-                .andExpect(model().attribute("error", "Please provide a YouTube URL."));
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("youtubeUrl", "   "))
+        .andExpect(status().isOk())
+        .andExpect(view().name("homeView"))
+        .andExpect(model().attribute("error", "Please provide a YouTube URL."));
     }
 
     @Test
-    void postHtmxRequestReturnsResultView() throws Exception {
+    void postHtmxEndpointReturnsRenderedHtml() throws Exception {
         when(articleService.generate(any()))
-                .thenReturn(new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>"));
+        .thenReturn(new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>"));
 
-        mockMvc.perform(post("/")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("youtubeUrl", "https://www.youtube.com/watch?v=abc123")
-                        .header("HX-Request", "true"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ui/result"))
-                .andExpect(model().attributeExists("article"));
+        mockMvc.perform(post("/ui/articles")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("youtubeUrl", "https://www.youtube.com/watch?v=abc123"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("Rendered output")))
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("Heading")));
     }
 }

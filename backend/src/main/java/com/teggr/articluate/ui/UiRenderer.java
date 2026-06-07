@@ -2,12 +2,7 @@ package com.teggr.articluate.ui;
 
 import com.teggr.articluate.model.ArticleResponse;
 import j2html.tags.DomContent;
-import org.springframework.stereotype.Component;
-import sh.rebelstack.j2html.engine.HtmlComponent;
-import sh.rebelstack.j2html.engine.HtmlTemplate;
-import sh.rebelstack.j2html.engine.RenderContext;
-
-import java.util.Optional;
+import j2html.tags.specialized.DivTag;
 
 import static j2html.TagCreator.article;
 import static j2html.TagCreator.div;
@@ -17,27 +12,27 @@ import static j2html.TagCreator.p;
 import static j2html.TagCreator.pre;
 import static j2html.TagCreator.unsafeHtml;
 
-@Component
-@HtmlTemplate("ui/result")
-public class ResultTemplate implements HtmlComponent {
+public final class UiRenderer {
 
-    @Override
-    public DomContent render(RenderContext ctx) {
-        Optional<String> error = ctx.find("error", String.class)
-                .filter(message -> !message.isBlank());
-        if (error.isPresent()) {
+    private UiRenderer() {
+    }
+
+    public static DivTag resultContainer(ArticleResponse article, String error) {
+        return div(resultContent(article, error)).withId("article-result");
+    }
+
+    public static DomContent resultContent(ArticleResponse article, String error) {
+        if (error != null && !error.isBlank()) {
             return div(
                     h3("Unable to generate article"),
-                    p(error.get())
+                    p(error)
             );
         }
 
-        Optional<ArticleResponse> articleResponse = ctx.find("article", ArticleResponse.class);
-        if (articleResponse.isEmpty()) {
+        if (article == null) {
             return div(p("No article yet."));
         }
 
-        ArticleResponse article = articleResponse.get();
         return article().with(
                 h2(article.title()),
                 h3("Rendered output"),
@@ -45,5 +40,9 @@ public class ResultTemplate implements HtmlComponent {
                 h3("Markdown"),
                 pre(article.markdown())
         );
+    }
+
+    public static String renderResultContent(ArticleResponse article, String error) {
+        return resultContent(article, error).render();
     }
 }
