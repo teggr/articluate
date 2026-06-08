@@ -75,6 +75,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           mkdir -p .deploy4j
           cat > .deploy4j/secrets << "EOF"
@@ -82,6 +83,7 @@ jobs:
           DOCKER_PASSWORD=$DOCKER_PASSWORD
           PRIVATE_KEY_PASSPHRASE=$PRIVATE_KEY_PASSPHRASE
           PRIVATE_KEY=~/.ssh/id_rsa
+          GEMINI_API_KEY=$GEMINI_API_KEY
           EOF
 
       - name: Deploy application with deploy4j via jbang
