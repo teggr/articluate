@@ -1,0 +1,54 @@
+service: articluate
+image: teggr/articluate
+
+servers:
+  web:
+    hosts:
+      - 167.233.69.173
+    options:
+      add-host: host.docker.internal:host-gateway
+    labels:
+      traefik.http.routers.articluate.rule: "Host(`articulate.me.uk`) || Host(`www.articulate.me.uk`)"
+      traefik.http.routers.articluate.entrypoints: "websecure"
+      traefik.http.routers.articluate.tls: "true"
+      traefik.http.routers.articluate.tls.certresolver: "letsencrypt"
+
+env:
+  clear:
+    SERVER_PORT: 8080
+    ARTICULATE_TRANSCRIPT-CACHE_DIR: "/articluate-data"_
+  secret:
+    - GEMINI_API_KEY
+
+registry:
+  username:
+    - DOCKER_USERNAME
+  password:
+    - DOCKER_PASSWORD
+
+ssh:
+  user: root
+  port: 22
+  key_path:
+    - PRIVATE_KEY
+  key_passphrase:
+    - PRIVATE_KEY_PASSPHRASE
+  strict_host_key_checking: false
+
+traefik:
+  options:
+    publish: "443:443"
+    volume: "/etc/deploy4j/letsencrypt:/letsencrypt"
+  args:
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+    entryPoints.web.http.redirections.entryPoint.to: "websecure"
+    entryPoints.web.http.redirections.entryPoint.scheme: "https"
+    entryPoints.web.http.redirections.entrypoint.permanent: true
+    certificatesResolvers.letsencrypt.acme.email: "robin@tegg.me.uk"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+    certificatesResolvers.letsencrypt.acme.httpchallenge: true
+    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: "web"
+
+volumes:
+  - /articluate-data:/articluate-data

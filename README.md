@@ -61,3 +61,39 @@ Response:
   "html": "..."
 }
 ```
+
+## Docker + deploy4j release flow
+
+This repository now follows the same deployment approach as yorkshire-golf:
+
+1. Build and package the app (also builds Docker image via Maven plugin)
+
+```shell
+mvn -B package --file pom.xml
+```
+
+2. Push the release Docker image
+
+```shell
+mvn -B docker:push --file pom.xml
+```
+
+3. Deploy a specific version with deploy4j
+
+```shell
+deploy4j deploy --version=0.0.1
+```
+
+Configuration files:
+
+- Docker image build: `Dockerfile` + `pom.xml` (`io.fabric8:docker-maven-plugin`)
+- deploy4j runtime config: `config/deploy.yml`
+- automated release + deploy pipeline: `.github/workflows/release-and-deploy.yml`
+
+Required GitHub secrets for the workflow:
+
+- `DOCKER_USERNAME`
+- `DOCKER_PASSWORD`
+- `PRIVATE_KEY`
+- `PRIVATE_KEY_PASSPHRASE`
+- `GEMINI_API_KEY`
