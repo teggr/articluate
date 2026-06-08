@@ -32,6 +32,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Explicitly pin JUnit 6 before j2html-extensions BOM which downgrades to JUnit 5 -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>dev.rebelcraft</groupId>
                 <artifactId>j2html-extensions-bom</artifactId>
