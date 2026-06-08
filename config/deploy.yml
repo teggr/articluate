@@ -16,7 +16,7 @@ servers:
 env:
   clear:
     SERVER_PORT: 8080
-    ARTICULATE_TRANSCRIPT-CACHE_DIR: "/articluate-data"_
+    ARTICULATE_TRANSCRIPT-CACHE_DIR: "/articluate-data"
   secret:
     - GEMINI_API_KEY
 
