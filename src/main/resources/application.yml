@@ -28,10 +28,9 @@ logging:
   level:
     com.teggr.articluate: INFO
 
-youtube:
-  proxy:
-    enabled: ${YOUTUBE_PROXY_ENABLED:false}
-    host: ${YOUTUBE_PROXY_HOST:us.socks.nordhold.net}
-    port: ${YOUTUBE_PROXY_PORT:1080}
-    username: ${NORDVPN_USERNAME:}
-    password: ${NORDVPN_PASSWORD:}
+supadata:
+  api-key: ${SUPADATA_API_KEY:}
+  base-url: ${SUPADATA_BASE_URL:https://api.supadata.ai/v1}
+  poll:
+    max-attempts: ${SUPADATA_POLL_MAX_ATTEMPTS:10}
+    interval-ms: ${SUPADATA_POLL_INTERVAL_MS:1000}

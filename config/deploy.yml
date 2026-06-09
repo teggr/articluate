@@ -17,11 +17,9 @@ env:
   clear:
     SERVER_PORT: 8080
     ARTICULATE_TRANSCRIPT-CACHE_DIR: "/articluate-data"
-    YOUTUBE_PROXY_ENABLED: "false"
   secret:
     - GEMINI_API_KEY
-    - NORDVPN_USERNAME
-    - NORDVPN_PASSWORD
+    - SUPADATA_API_KEY
 
 registry:
   username:

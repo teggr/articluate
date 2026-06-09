@@ -5,7 +5,7 @@ A service for converting YouTube videos into readable blog articles.
 ## How it works
 
 1. Paste a YouTube URL
-2. The backend extracts the video transcript directly from YouTube
+2. The backend fetches the transcript from Supadata's API
 3. The transcript is cleaned (filler words, `[Music]` tags, etc. removed)
 4. A two-step AI pipeline (Gemini Flash via Spring AI) converts the transcript into a polished Markdown blog article
 5. The API returns the title, Markdown, and rendered HTML
@@ -22,18 +22,20 @@ A service for converting YouTube videos into readable blog articles.
 - Java 21+
 - Maven 3.9+
 - A [Google AI Studio](https://aistudio.google.com/) API key (free tier available)
+- A [Supadata](https://supadata.ai/) API key for transcript retrieval
 
 ## Running locally
 
 ```bash
 cd backend
-GEMINI_API_KEY=your-key-here mvn spring-boot:run
+GEMINI_API_KEY=your-key-here SUPADATA_API_KEY=your-key-here mvn spring-boot:run
 ```
 
 Or export the environment variable first:
 
 ```bash
 export GEMINI_API_KEY=your-key-here
+export SUPADATA_API_KEY=your-key-here
 cd backend && mvn spring-boot:run
 ```
 
@@ -97,7 +99,4 @@ Required GitHub secrets for the workflow:
 - `PRIVATE_KEY`
 - `PRIVATE_KEY_PASSPHRASE`
 - `GEMINI_API_KEY`
-- `NORDVPN_USERNAME` (optional)
-- `NORDVPN_PASSWORD` (optional)
-
-If both NordVPN secrets are set, deployment enables `YOUTUBE_PROXY_ENABLED=true` automatically.
+- `SUPADATA_API_KEY`

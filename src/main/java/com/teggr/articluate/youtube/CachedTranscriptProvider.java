@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * {@link TranscriptProvider} decorator that checks a local file cache before
- * delegating to {@link YoutubeTranscriptProvider}.
+ * delegating to {@link SupadataTranscriptProvider}.
  *
  * <p>Cache layout: {@code .data/{videoId}.json} (directory configurable via
  * {@code articluate.transcript-cache.dir}).</p>
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class CachedTranscriptProvider implements TranscriptProvider {
 
     private final TranscriptFileCache cache;
-    private final YoutubeTranscriptProvider delegate;
+    private final SupadataTranscriptProvider delegate;
     private final YouTubeVideoIdExtractor videoIdExtractor;
 
     @Override
@@ -27,7 +27,7 @@ public class CachedTranscriptProvider implements TranscriptProvider {
         String videoId = videoIdExtractor.extract(youtubeUrl);
 
         return cache.load(videoId).orElseGet(() -> {
-            log.debug("Cache miss for video ID: {} — fetching from YouTube", videoId);
+            log.debug("Cache miss for video ID: {} — fetching from Supadata", videoId);
             TranscriptResult result = delegate.fetchTranscript(youtubeUrl);
             cache.save(result);
             return result;

@@ -18,7 +18,7 @@ class CachedTranscriptProviderTest {
     private TranscriptFileCache cache;
 
     @Mock
-    private YoutubeTranscriptProvider delegate;
+    private SupadataTranscriptProvider delegate;
 
     @Mock
     private YouTubeVideoIdExtractor videoIdExtractor;
