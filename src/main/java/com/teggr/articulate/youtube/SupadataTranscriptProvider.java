@@ -89,7 +89,7 @@ public class SupadataTranscriptProvider implements TranscriptProvider {
         }
 
         String title = extractTitle(transcriptPayload);
-        return new TranscriptResult(videoId, title, transcript);
+        return TranscriptResult.fetched(videoId, title, transcript);
     }
 
     private JsonNode requestTranscript(String youtubeUrl) {
