@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -30,7 +32,7 @@ class UiControllerTest {
 
     @Test
     void getIndexReturnsIndexView() throws Exception {
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/").with(user("test-user")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("homeView"))
                 .andExpect(model().attributeExists("youtubeUrl"));
@@ -39,6 +41,8 @@ class UiControllerTest {
     @Test
     void postBlankUrlReturnsValidationError() throws Exception {
         mockMvc.perform(post("/")
+            .with(user("test-user"))
+            .with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("youtubeUrl", "   "))
         .andExpect(status().isOk())
@@ -52,6 +56,8 @@ class UiControllerTest {
         .thenReturn(new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>"));
 
         mockMvc.perform(post("/ui/articles")
+            .with(user("test-user"))
+            .with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("youtubeUrl", "https://www.youtube.com/watch?v=abc123"))
         .andExpect(status().isOk())
@@ -67,6 +73,8 @@ class UiControllerTest {
                 .thenThrow(new TranscriptNotFoundException(rateLimitMessage));
 
         mockMvc.perform(post("/")
+                .with(user("test-user"))
+                .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("youtubeUrl", "https://www.youtube.com/watch?v=nfIcjkR4KZ8"))
                 .andExpect(status().isOk())

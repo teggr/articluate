@@ -20,6 +20,8 @@ env:
   secret:
     - GEMINI_API_KEY
     - SUPADATA_API_KEY
+    - SPRING_SECURITY_USER_NAME
+    - SPRING_SECURITY_USER_PASSWORD
 
 registry:
   username:
