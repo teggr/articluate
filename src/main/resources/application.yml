@@ -7,9 +7,6 @@ spring:
       name: ${SPRING_SECURITY_USER_NAME:articulate}
       password: ${SPRING_SECURITY_USER_PASSWORD:change-me}
 
-  model:
-    chat: google-genai
-
   ai:
     google:
       genai:

@@ -3,9 +3,7 @@ package com.teggr.articulate.youtube;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.teggr.articulate.service.transcripts.TranscriptResult;
-import com.teggr.articulate.youtube.SupadataTranscriptProvider;
-import com.teggr.articulate.youtube.YouTubeVideoIdExtractor;
+import com.teggr.articulate.transcripts.TranscriptResult;
 
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;

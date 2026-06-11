@@ -11,9 +11,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
-import com.teggr.articulate.exception.TranscriptNotFoundException;
-import com.teggr.articulate.service.transcripts.TranscriptProvider;
-import com.teggr.articulate.service.transcripts.TranscriptResult;
+import com.teggr.articulate.transcripts.TranscriptNotFoundException;
+import com.teggr.articulate.transcripts.TranscriptProvider;
+import com.teggr.articulate.transcripts.TranscriptResult;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -201,16 +201,16 @@ public class SupadataTranscriptProvider implements TranscriptProvider {
     }
 
     private boolean isPending(JsonNode body) {
-        String status = body.path("status").asText("").toLowerCase();
+        String status = body.path("status").asString("").toLowerCase();
         return status.equals("pending") || status.equals("queued") || status.equals("processing") || status.equals("running");
     }
 
     private String extractJobId(JsonNode body) {
-        String jobId = body.path("jobId").asText("");
+        String jobId = body.path("jobId").asString("");
         if (!jobId.isBlank()) {
             return jobId;
         }
-        jobId = body.path("id").asText("");
+        jobId = body.path("id").asString("");
         if (!jobId.isBlank()) {
             return jobId;
         }
@@ -232,12 +232,12 @@ public class SupadataTranscriptProvider implements TranscriptProvider {
         if (contentNode == null || contentNode.isMissingNode() || contentNode.isNull()) {
             return "";
         }
-        if (contentNode.isTextual()) {
-            return contentNode.asText("");
+        if (contentNode.isString()) {
+            return contentNode.asString("");
         }
         if (contentNode.isObject()) {
             if (contentNode.has("text")) {
-                return contentNode.path("text").asText("");
+                return contentNode.path("text").asString("");
             }
             if (contentNode.has("content")) {
                 return extractTranscriptText(contentNode.path("content"));
@@ -250,15 +250,15 @@ public class SupadataTranscriptProvider implements TranscriptProvider {
 
         List<String> chunks = new ArrayList<>();
         for (JsonNode item : contentNode) {
-            if (item.isTextual()) {
-                String value = item.asText("").strip();
+            if (item.isString()) {
+                String value = item.asString("").strip();
                 if (!value.isBlank()) {
                     chunks.add(value);
                 }
                 continue;
             }
             if (item.isObject()) {
-                String value = item.path("text").asText("").strip();
+                String value = item.path("text").asString("").strip();
                 if (!value.isBlank()) {
                     chunks.add(value);
                 }
@@ -276,7 +276,7 @@ public class SupadataTranscriptProvider implements TranscriptProvider {
                 "/metadata/title",
                 "/meta/title"
         )) {
-            String title = payload.at(path).asText("").strip();
+            String title = payload.at(path).asString("").strip();
             if (!title.isBlank()) {
                 return title;
             }

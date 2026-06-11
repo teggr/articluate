@@ -2,8 +2,6 @@ package com.teggr.articulate.youtube;
 
 import org.junit.jupiter.api.Test;
 
-import com.teggr.articulate.youtube.YouTubeVideoIdExtractor;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
