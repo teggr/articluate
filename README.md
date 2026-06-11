@@ -57,6 +57,10 @@ Use this bookmarklet to send the current YouTube page (or a pasted YouTube URL) 
 javascript:(()=>{const host=u=>{try{return new URL(u).hostname.toLowerCase().replace(/^www\./,'')}catch{return''}};const isYt=u=>['youtube.com','m.youtube.com','music.youtube.com','youtu.be'].includes(host(u));let y=isYt(location.href)?location.href:prompt('Paste YouTube URL');if(!y)return;if(!isYt(y)){alert('Please provide a valid YouTube URL.');return;}location.href='https://articulate.me.uk/generate?url='+encodeURIComponent(y);})();
 ```
 
+For iPhone setup, see this guide on creating a share shortcut:
+
+- [Create iPhone shortcut for sharing links](https://robintegg.com/2025/05/11/create-iphone-shortcut-for-sharing-links)
+
 ## Docker + deploy4j release flow
 
 This repository now follows the same deployment approach as yorkshire-golf:
