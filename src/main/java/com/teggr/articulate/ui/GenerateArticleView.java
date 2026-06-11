@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxIndicator;
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxPost;
+import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxSelect;
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxSwap;
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.hxTarget;
 import static dev.rebelcraft.j2html.htmx.HtmxAttributes.innerHTML;
@@ -70,6 +71,7 @@ public class GenerateArticleView extends J2HtmlView {
                                         .withAction("/generate")
                                         .attr(hxPost("/generate"))
                                         .attr(hxTarget("#article-result"))
+                                        .attr(hxSelect("#article-result"))
                                         .attr(hxSwap(innerHTML))
                                         .attr(hxIndicator("#loading-indicator"))
                                         .with(
