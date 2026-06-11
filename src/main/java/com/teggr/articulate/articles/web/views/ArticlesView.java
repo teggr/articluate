@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.teggr.articulate.articles.ArticleResult;
 import com.teggr.articulate.web.views.Page;
+import j2html.tags.specialized.PTag;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class ArticlesView extends J2HtmlView {
                                                            HttpServletRequest request,
                                                            HttpServletResponse response) {
         List<ArticleResult> articles = (List<ArticleResult>) model.getOrDefault("articles", List.of());
+        Map<String, String> sourceUrls = (Map<String, String>) model.getOrDefault("sourceUrls", Map.of());
 
         return Page.render(
                 "Articles | Articulate",
@@ -44,19 +46,31 @@ public class ArticlesView extends J2HtmlView {
                         articles.isEmpty()
                                 ? div("No articles have been created yet.").withClass("empty")
                                 : div(articles.stream()
-                                        .map(this::articleCard)
+                                        .map(article -> articleCard(article, sourceUrls))
                                         .toArray(DomContent[]::new)).withClass("list")
                 )
         );
     }
 
-    private DomContent articleCard(ArticleResult article) {
+    private DomContent articleCard(ArticleResult article, Map<String, String> sourceUrls) {
+        String sourceUrl = sourceUrls.get(article.id());
+        PTag meta = p().withClass("meta").with(
+                text("Created "),
+                time(article.createdAt()).attr("datetime", article.createdAt())
+        );
+        if (sourceUrl != null && !sourceUrl.isBlank()) {
+            meta.with(
+                    text(" | "),
+                                        a(sourceUrl)
+                            .withHref(sourceUrl)
+                            .attr("target", "_blank")
+                            .attr("rel", "noopener noreferrer")
+            );
+        }
+
         return article().withClass("card").with(
                 h2(a(article.title()).withHref("/articles/" + article.id())),
-                p().withClass("meta").with(
-                        text("Created "),
-                        time(article.createdAt()).attr("datetime", article.createdAt())
-                )
+                meta
         );
     }
 }

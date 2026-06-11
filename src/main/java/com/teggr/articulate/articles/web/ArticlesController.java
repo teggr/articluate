@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 
 import com.teggr.articulate.articles.ArticleService;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/articles")
 @RequiredArgsConstructor
@@ -20,7 +23,15 @@ public class ArticlesController {
 
     @GetMapping
     public String index(Model model) {
-        model.addAttribute("articles", articleService.findAll());
+        var articles = articleService.findAll();
+        Map<String, String> sourceUrls = new LinkedHashMap<>();
+        for (var article : articles) {
+            articleService.findSourceUrlByTranscriptId(article.transcriptId())
+                    .ifPresent(url -> sourceUrls.put(article.id(), url));
+        }
+
+        model.addAttribute("articles", articles);
+        model.addAttribute("sourceUrls", sourceUrls);
         return "articlesView";
     }
 
@@ -31,6 +42,8 @@ public class ArticlesController {
         model.addAttribute("article", articleService.findResponseById(articleId).orElseThrow());
         model.addAttribute("articleId", article.id());
         model.addAttribute("createdAt", article.createdAt());
+        model.addAttribute("sourceUrl", articleService.findSourceUrlByTranscriptId(article.transcriptId()).orElse(""));
+        model.addAttribute("youtubeEmbedUrl", articleService.findYoutubeEmbedUrlByTranscriptId(article.transcriptId()).orElse(""));
         return "articleDetailView";
     }
 }

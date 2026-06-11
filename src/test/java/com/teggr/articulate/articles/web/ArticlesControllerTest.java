@@ -11,6 +11,7 @@ import com.teggr.articulate.articles.ArticleResponse;
 import com.teggr.articulate.articles.ArticleService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -36,11 +37,16 @@ class ArticlesControllerTest {
                 new ArticleResult("a1", "2026-06-10T10:00:00Z", "t1", "Older", "# older")
         );
         when(articleService.findAll()).thenReturn(articles);
+        when(articleService.findSourceUrlByTranscriptId("t2"))
+            .thenReturn(Optional.of("https://www.youtube.com/watch?v=abc123"));
+        when(articleService.findSourceUrlByTranscriptId("t1"))
+            .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/articles").with(user("test-user")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("articlesView"))
-                .andExpect(model().attribute("articles", articles));
+            .andExpect(model().attribute("articles", articles))
+            .andExpect(model().attribute("sourceUrls", Map.of("a2", "https://www.youtube.com/watch?v=abc123")));
     }
 
     @Test
@@ -49,13 +55,19 @@ class ArticlesControllerTest {
         ArticleResponse response = new ArticleResponse("Newest", "# newest", "<h1>newest</h1>");
         when(articleService.findById("a2")).thenReturn(Optional.of(stored));
         when(articleService.findResponseById("a2")).thenReturn(Optional.of(response));
+        when(articleService.findSourceUrlByTranscriptId("t2"))
+            .thenReturn(Optional.of("https://www.youtube.com/watch?v=abc123"));
+        when(articleService.findYoutubeEmbedUrlByTranscriptId("t2"))
+            .thenReturn(Optional.of("https://www.youtube-nocookie.com/embed/abc123"));
 
         mockMvc.perform(get("/articles/a2").with(user("test-user")))
                 .andExpect(status().isOk())
                 .andExpect(view().name("articleDetailView"))
                 .andExpect(model().attribute("article", response))
                 .andExpect(model().attribute("articleId", "a2"))
-                .andExpect(model().attribute("createdAt", "2026-06-11T10:00:00Z"));
+            .andExpect(model().attribute("createdAt", "2026-06-11T10:00:00Z"))
+            .andExpect(model().attribute("sourceUrl", "https://www.youtube.com/watch?v=abc123"))
+            .andExpect(model().attribute("youtubeEmbedUrl", "https://www.youtube-nocookie.com/embed/abc123"));
     }
 
     @Test

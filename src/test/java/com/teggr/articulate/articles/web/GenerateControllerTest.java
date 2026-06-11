@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.teggr.articulate.articles.ArticleResponse;
 import com.teggr.articulate.articles.ArticleService;
 import com.teggr.articulate.transcripts.TranscriptNotFoundException;
+import com.teggr.articulate.youtube.YouTubeVideoIdExtractor;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -30,12 +31,15 @@ class GenerateControllerTest {
     @MockitoBean
     private ArticleService articleService;
 
+        @MockitoBean
+        private YouTubeVideoIdExtractor videoIdExtractor;
+
     @Test
     void getGenerateReturnsHomeView() throws Exception {
         mockMvc.perform(get("/generate").with(user("test-user")))
                 .andExpect(status().isOk())
                                 .andExpect(view().name("generateArticleView"))
-                .andExpect(model().attributeExists("youtubeUrl"));
+                                .andExpect(model().attributeExists("youtubeUrl"));
     }
 
     @Test
@@ -47,11 +51,13 @@ class GenerateControllerTest {
                         .param("youtubeUrl", "   "))
                 .andExpect(status().isOk())
                 .andExpect(view().name("generateArticleView"))
+                .andExpect(model().attribute("youtubeEmbedUrl", ""))
                 .andExpect(model().attribute("error", "Please provide a YouTube URL."));
     }
 
     @Test
     void postHtmxEndpointReturnsRenderedHtml() throws Exception {
+                when(videoIdExtractor.extract("https://www.youtube.com/watch?v=abc123")).thenReturn("abc1234DEFG");
         when(articleService.generate(any()))
                 .thenReturn(new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>"));
 
@@ -62,12 +68,14 @@ class GenerateControllerTest {
                         .param("youtubeUrl", "https://www.youtube.com/watch?v=abc123"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("generateArticleView"))
+                .andExpect(model().attribute("youtubeEmbedUrl", "https://www.youtube-nocookie.com/embed/abc1234DEFG"))
                 .andExpect(model().attribute("article", new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>")));
     }
 
     @Test
     void postShowsRateLimitErrorFromTranscriptProvider() throws Exception {
         String rateLimitMessage = "YouTube is rate-limiting transcript requests right now. Please wait a few minutes and try again.";
+                when(videoIdExtractor.extract("https://www.youtube.com/watch?v=nfIcjkR4KZ8")).thenReturn("nfIcjkR4KZ8");
 
         when(articleService.generate(any()))
                 .thenThrow(new TranscriptNotFoundException(rateLimitMessage));
@@ -79,6 +87,7 @@ class GenerateControllerTest {
                         .param("youtubeUrl", "https://www.youtube.com/watch?v=nfIcjkR4KZ8"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("generateArticleView"))
+                                .andExpect(model().attribute("youtubeEmbedUrl", "https://www.youtube-nocookie.com/embed/nfIcjkR4KZ8"))
                 .andExpect(model().attribute("error", rateLimitMessage));
     }
 }

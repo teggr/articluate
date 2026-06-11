@@ -309,6 +309,34 @@ pre {
   margin-top: var(--space-3);
 }
 
+.article-detail-page .video-embed {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+}
+
+.generate-page .video-embed {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+}
+
+.article-detail-page .video-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.generate-page .video-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
 /* =========================
    Responsive
    ========================= */

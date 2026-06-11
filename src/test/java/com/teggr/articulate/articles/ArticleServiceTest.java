@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.teggr.articulate.blogs.BlogContent;
 import com.teggr.articulate.blogs.BlogGenerationService;
 import com.teggr.articulate.transcripts.TranscriptCleaningService;
+import com.teggr.articulate.transcripts.TranscriptRepository;
 import com.teggr.articulate.transcripts.TranscriptResult;
 import com.teggr.articulate.transcripts.TranscriptService;
 import com.teggr.articulate.utils.markdown.MarkdownService;
@@ -16,6 +17,7 @@ import com.teggr.articulate.utils.markdown.MarkdownService;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -34,6 +36,9 @@ class ArticleServiceTest {
 
     @Mock
     private TranscriptService transcriptService;
+
+    @Mock
+    private TranscriptRepository transcriptRepository;
 
     @Mock
     private TranscriptCleaningService transcriptCleaningService;
@@ -120,5 +125,25 @@ class ArticleServiceTest {
         assertEquals("# markdown", response.markdown());
         assertEquals("<h1>markdown</h1>", response.html());
         verify(articleRepository).save(any(ArticleResult.class));
+    }
+
+    @Test
+    void findSourceUrlByTranscriptIdBuildsWatchUrlFromVideoId() {
+        when(transcriptRepository.findById("trn-123")).thenReturn(Optional.of(STORED_TRANSCRIPT));
+
+        Optional<String> sourceUrl = articleService.findSourceUrlByTranscriptId("trn-123");
+
+        assertTrue(sourceUrl.isPresent());
+        assertEquals("https://www.youtube.com/watch?v=abc1234DEFG", sourceUrl.get());
+    }
+
+    @Test
+    void findYoutubeEmbedUrlByTranscriptIdBuildsEmbedUrlFromVideoId() {
+        when(transcriptRepository.findById("trn-123")).thenReturn(Optional.of(STORED_TRANSCRIPT));
+
+        Optional<String> embedUrl = articleService.findYoutubeEmbedUrlByTranscriptId("trn-123");
+
+        assertTrue(embedUrl.isPresent());
+        assertEquals("https://www.youtube-nocookie.com/embed/abc1234DEFG", embedUrl.get());
     }
 }

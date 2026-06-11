@@ -11,12 +11,13 @@ import com.teggr.articulate.web.views.Page;
 
 import java.util.Map;
 
+import static j2html.TagCreator.a;
 import static j2html.TagCreator.div;
 import static j2html.TagCreator.h1;
 import static j2html.TagCreator.h2;
+import static j2html.TagCreator.iframe;
 import static j2html.TagCreator.main;
 import static j2html.TagCreator.p;
-import static j2html.TagCreator.pre;
 import static j2html.TagCreator.rawHtml;
 import static j2html.TagCreator.time;
 import static j2html.TagCreator.text;
@@ -30,6 +31,32 @@ public class ArticleDetailView extends J2HtmlView {
                                                            HttpServletResponse response) {
         ArticleResponse article = (ArticleResponse) model.get("article");
         String createdAt = (String) model.getOrDefault("createdAt", "");
+        String sourceUrl = (String) model.getOrDefault("sourceUrl", "");
+        String youtubeEmbedUrl = (String) model.getOrDefault("youtubeEmbedUrl", "");
+
+        DomContent sourceMeta = sourceUrl.isBlank()
+                ? text("")
+                : p().withClass("meta").with(
+                        text("Source: "),
+                        a(sourceUrl)
+                                .withHref(sourceUrl)
+                                .attr("target", "_blank")
+                                .attr("rel", "noopener noreferrer")
+                );
+
+        DomContent videoSection = youtubeEmbedUrl.isBlank()
+                ? text("")
+                : div().withClass("section").with(
+                        h2("Video"),
+                        div().withClass("video-embed").with(
+                                iframe()
+                                        .withClass("video-frame")
+                                        .attr("title", "YouTube video player")
+                                        .withSrc(youtubeEmbedUrl)
+                                        .attr("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share")
+                                        .attr("allowfullscreen", "allowfullscreen")
+                        )
+                );
 
         return Page.render(
                 article.title() + " | Articulate",
@@ -43,13 +70,11 @@ public class ArticleDetailView extends J2HtmlView {
                                 text("Created "),
                                 time(createdAt).attr("datetime", createdAt)
                         ),
+                        sourceMeta,
+                        videoSection,
                         div().withClass("section").with(
                                 h2("Rendered output"),
                                 div(rawHtml(article.html()))
-                        ),
-                        div().withClass("section").with(
-                                h2("Markdown"),
-                                pre(article.markdown())
                         )
                 )
         );

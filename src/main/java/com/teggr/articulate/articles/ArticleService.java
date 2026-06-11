@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.teggr.articulate.blogs.BlogContent;
 import com.teggr.articulate.blogs.BlogGenerationService;
 import com.teggr.articulate.transcripts.TranscriptCleaningService;
+import com.teggr.articulate.transcripts.TranscriptRepository;
 import com.teggr.articulate.transcripts.TranscriptResult;
 import com.teggr.articulate.transcripts.TranscriptService;
 import com.teggr.articulate.utils.markdown.MarkdownService;
@@ -21,8 +22,11 @@ import java.util.Optional;
 public class ArticleService {
 
     private static final int MAX_ID_ATTEMPTS = 5;
+    private static final String YOUTUBE_WATCH_URL_PREFIX = "https://www.youtube.com/watch?v=";
+    private static final String YOUTUBE_EMBED_URL_PREFIX = "https://www.youtube-nocookie.com/embed/";
 
     private final TranscriptService transcriptService;
+    private final TranscriptRepository transcriptRepository;
     private final TranscriptCleaningService transcriptCleaningService;
     private final BlogGenerationService blogGenerationService;
     private final MarkdownService markdownService;
@@ -39,6 +43,22 @@ public class ArticleService {
 
     public Optional<ArticleResponse> findResponseById(String articleId) {
         return findById(articleId).map(this::toResponse);
+    }
+
+    public Optional<String> findSourceUrlByTranscriptId(String transcriptId) {
+        return findVideoIdByTranscriptId(transcriptId)
+            .map(videoId -> YOUTUBE_WATCH_URL_PREFIX + videoId);
+        }
+
+        public Optional<String> findYoutubeEmbedUrlByTranscriptId(String transcriptId) {
+        return findVideoIdByTranscriptId(transcriptId)
+            .map(videoId -> YOUTUBE_EMBED_URL_PREFIX + videoId);
+        }
+
+        public Optional<String> findVideoIdByTranscriptId(String transcriptId) {
+        return transcriptRepository.findById(transcriptId)
+            .map(TranscriptResult::videoId)
+            .filter(videoId -> videoId != null && !videoId.isBlank());
     }
 
     public ArticleResponse generate(ArticleRequest request) {

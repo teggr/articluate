@@ -37,6 +37,7 @@ public class GenerateArticleView extends J2HtmlView {
                                                            HttpServletRequest request,
                                                            HttpServletResponse response) {
         String youtubeUrl = (String) model.getOrDefault("youtubeUrl", "");
+        String youtubeEmbedUrl = (String) model.getOrDefault("youtubeEmbedUrl", "");
         ArticleResponse article = (ArticleResponse) model.get("article");
         String error = (String) model.get("error");
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
@@ -71,7 +72,7 @@ public class GenerateArticleView extends J2HtmlView {
                                         button("Generate article").withType("submit"),
                                         div("Generating...").withId("loading-indicator").withClass("htmx-indicator")
                                 ),
-                        UiRenderer.resultContainer(article, error)
+                                                UiRenderer.resultContainer(article, error, youtubeEmbedUrl)
                 ),
                 script().withSrc("https://unpkg.com/htmx.org@2.0.4")
         );

@@ -15,6 +15,7 @@ import com.teggr.articulate.articles.ArticleRequest;
 import com.teggr.articulate.articles.ArticleResponse;
 import com.teggr.articulate.articles.ArticleService;
 import com.teggr.articulate.transcripts.TranscriptNotFoundException;
+import com.teggr.articulate.youtube.YouTubeVideoIdExtractor;
 
 @Controller
 @RequestMapping("/generate")
@@ -24,8 +25,10 @@ public class GenerateController {
     private static final Logger log = LoggerFactory.getLogger(GenerateController.class);
     private static final String EMPTY_URL_ERROR = "Please provide a YouTube URL.";
     private static final String GENERIC_ERROR = "Unable to generate article right now. Please try again.";
+    private static final String YOUTUBE_EMBED_URL_PREFIX = "https://www.youtube-nocookie.com/embed/";
 
     private final ArticleService articleService;
+    private final YouTubeVideoIdExtractor videoIdExtractor;
 
     @GetMapping
     public String index(Model model) {
@@ -46,6 +49,7 @@ public class GenerateController {
     private void applyGeneration(Model model, String normalizedUrl) {
         model.addAttribute("article", null);
         model.addAttribute("error", null);
+        model.addAttribute("youtubeEmbedUrl", buildYoutubeEmbedUrl(normalizedUrl));
 
         if (normalizedUrl.isBlank()) {
             model.addAttribute("error", EMPTY_URL_ERROR);
@@ -70,6 +74,18 @@ public class GenerateController {
 
     private String normalize(String youtubeUrl) {
         return youtubeUrl == null ? "" : youtubeUrl.trim();
+    }
+
+    private String buildYoutubeEmbedUrl(String youtubeUrl) {
+        if (youtubeUrl == null || youtubeUrl.isBlank()) {
+            return "";
+        }
+
+        try {
+            return YOUTUBE_EMBED_URL_PREFIX + videoIdExtractor.extract(youtubeUrl);
+        } catch (IllegalArgumentException ex) {
+            return "";
+        }
     }
 
     private record GenerationResult(ArticleResponse article, String error) {
