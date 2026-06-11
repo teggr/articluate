@@ -49,8 +49,8 @@ class FileSystemTranscriptRepositoryTest {
 
     @Test
     void saveCreatesDirectoryIfAbsent() {
-        Path subDir = tempDir.resolve("nested").resolve("transcripts");
-        FileSystemTranscriptRepository repository = new FileSystemTranscriptRepository(subDir.toString(), objectMapper);
+        Path dataDir = tempDir.resolve("nested");
+        FileSystemTranscriptRepository repository = new FileSystemTranscriptRepository(dataDir.toString(), objectMapper);
         TranscriptResult result = new TranscriptResult(
                 "trn-1234",
                 "2026-06-10T22:00:00Z",
@@ -60,6 +60,6 @@ class FileSystemTranscriptRepositoryTest {
 
         repository.save(result);
 
-        assertTrue(subDir.resolve("trn-1234.json").toFile().exists());
+        assertTrue(dataDir.resolve("transcripts").resolve("trn-1234.json").toFile().exists());
     }
 }

@@ -18,7 +18,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -36,7 +35,7 @@ class GenerateControllerTest {
     void getGenerateReturnsHomeView() throws Exception {
         mockMvc.perform(get("/generate").with(user("test-user")))
                 .andExpect(status().isOk())
-                .andExpect(view().name("homeView"))
+                                .andExpect(view().name("generateArticleView"))
                 .andExpect(model().attributeExists("youtubeUrl"));
     }
 
@@ -48,7 +47,7 @@ class GenerateControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("youtubeUrl", "   "))
                 .andExpect(status().isOk())
-                .andExpect(view().name("homeView"))
+                .andExpect(view().name("generateArticleView"))
                 .andExpect(model().attribute("error", "Please provide a YouTube URL."));
     }
 
@@ -57,14 +56,14 @@ class GenerateControllerTest {
         when(articleService.generate(any()))
                 .thenReturn(new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>"));
 
-        mockMvc.perform(post("/generate/ui/articles")
+        mockMvc.perform(post("/generate")
                         .with(user("test-user"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("youtubeUrl", "https://www.youtube.com/watch?v=abc123"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Rendered output")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Heading")));
+                .andExpect(view().name("generateArticleView"))
+                .andExpect(model().attribute("article", new ArticleResponse("Title", "# Heading", "<h1>Heading</h1>")));
     }
 
     @Test
@@ -80,7 +79,7 @@ class GenerateControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("youtubeUrl", "https://www.youtube.com/watch?v=nfIcjkR4KZ8"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("homeView"))
+                .andExpect(view().name("generateArticleView"))
                 .andExpect(model().attribute("error", rateLimitMessage));
     }
 }
