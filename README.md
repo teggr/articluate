@@ -49,6 +49,14 @@ Then open `http://localhost:8080/` for the public landing page.
 The article generator UI is at `http://localhost:8080/generate` and requires authentication.
 Spring Security will require authentication for `/generate` and API endpoints using the configured username and password.
 
+## Browser bookmarklet (production)
+
+Use this bookmarklet to send the current YouTube page (or a pasted YouTube URL) directly to Articulate with the URL prefilled:
+
+```text
+javascript:(()=>{const host=u=>{try{return new URL(u).hostname.toLowerCase().replace(/^www\./,'')}catch{return''}};const isYt=u=>['youtube.com','m.youtube.com','music.youtube.com','youtu.be'].includes(host(u));let y=isYt(location.href)?location.href:prompt('Paste YouTube URL');if(!y)return;if(!isYt(y)){alert('Please provide a valid YouTube URL.');return;}location.href='https://articulate.me.uk/generate?url='+encodeURIComponent(y);})();
+```
+
 ## Docker + deploy4j release flow
 
 This repository now follows the same deployment approach as yorkshire-golf:
