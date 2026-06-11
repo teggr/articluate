@@ -8,6 +8,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.teggr.articulate.articles.ArticleService;
+import com.teggr.articulate.articles.web.ArticlesController;
 import com.teggr.articulate.articles.web.GenerateController;
 import com.teggr.articulate.web.LandingController;
 
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest({LandingController.class, GenerateController.class})
+@WebMvcTest({LandingController.class, GenerateController.class, ArticlesController.class})
 @Import(SecurityConfig.class)
 class SecurityIntegrationTest {
 
@@ -47,5 +48,12 @@ class SecurityIntegrationTest {
     void generatePageIsAccessibleWhenAuthenticated() throws Exception {
         mockMvc.perform(get("/generate").with(user("test-user")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void articlesPageRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/articles"))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/login")));
     }
 }

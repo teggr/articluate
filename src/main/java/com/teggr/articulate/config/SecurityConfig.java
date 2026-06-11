@@ -16,9 +16,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/app.css", "/favicon.ico", "/**/*.css", "/**/*.js").permitAll()
                         .requestMatchers("/generate/**").authenticated()
+                .requestMatchers("/articles/**").authenticated()
                         .anyRequest().authenticated())
-                .formLogin(form -> form.defaultSuccessUrl("/generate", true));
+                .formLogin(form -> form.defaultSuccessUrl("/articles"))
+                .logout(logout -> logout.logoutSuccessUrl("/"));
 
         return http.build();
     }

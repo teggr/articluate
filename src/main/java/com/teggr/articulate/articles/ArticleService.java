@@ -12,6 +12,8 @@ import com.teggr.articulate.transcripts.TranscriptService;
 import com.teggr.articulate.utils.markdown.MarkdownService;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,18 @@ public class ArticleService {
     private final MarkdownService markdownService;
     private final ArticleRepository articleRepository;
     private final ArticleIdGenerator articleIdGenerator;
+
+    public List<ArticleResult> findAll() {
+        return articleRepository.findAll();
+    }
+
+    public Optional<ArticleResult> findById(String articleId) {
+        return articleRepository.findById(articleId);
+    }
+
+    public Optional<ArticleResponse> findResponseById(String articleId) {
+        return findById(articleId).map(this::toResponse);
+    }
 
     public ArticleResponse generate(ArticleRequest request) {
         log.info("Generating article for URL: {}", request.youtubeUrl());

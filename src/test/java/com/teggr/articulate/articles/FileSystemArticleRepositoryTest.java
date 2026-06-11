@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,5 +84,36 @@ class FileSystemArticleRepositoryTest {
 
         assertTrue(loaded.isPresent());
         assertEquals(newer, loaded.get());
+    }
+
+    @Test
+    void findAllReturnsNewestFirst() {
+        FileSystemArticleRepository repository = repository();
+        ArticleResult oldest = new ArticleResult(
+                "art-oldest",
+                "2026-06-09T10:00:00Z",
+                "trn-oldest",
+                "Oldest",
+                "# oldest");
+        ArticleResult newest = new ArticleResult(
+                "art-newest",
+                "2026-06-11T10:00:00Z",
+                "trn-newest",
+                "Newest",
+                "# newest");
+        ArticleResult middle = new ArticleResult(
+                "art-middle",
+                "2026-06-10T10:00:00Z",
+                "trn-middle",
+                "Middle",
+                "# middle");
+
+        repository.save(oldest);
+        repository.save(newest);
+        repository.save(middle);
+
+        List<ArticleResult> loaded = repository.findAll();
+
+        assertEquals(List.of(newest, middle, oldest), loaded);
     }
 }

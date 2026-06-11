@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -56,6 +57,25 @@ public class FileSystemArticleRepository implements ArticleRepository {
                     .findFirst();
         } catch (Exception e) {
             throw new RuntimeException("Failed to scan articles for transcript id " + transcriptId, e);
+        }
+    }
+
+    @Override
+    public List<ArticleResult> findAll() {
+        if (!Files.exists(repositoryDir)) {
+            return List.of();
+        }
+
+        try (Stream<Path> files = Files.list(repositoryDir)) {
+            return files
+                    .filter(path -> path.getFileName().toString().endsWith(".json"))
+                    .map(this::readArticleSafely)
+                    .flatMap(Optional::stream)
+                    .sorted(Comparator.comparing(ArticleResult::createdAt,
+                            Comparator.nullsLast(Comparator.reverseOrder())))
+                    .toList();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to list stored articles", e);
         }
     }
 
