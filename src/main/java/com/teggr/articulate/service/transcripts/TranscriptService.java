@@ -1,12 +1,8 @@
-package com.teggr.articulate.service;
+package com.teggr.articulate.service.transcripts;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import com.teggr.articulate.youtube.TranscriptProvider;
-import com.teggr.articulate.youtube.TranscriptRepository;
-import com.teggr.articulate.youtube.TranscriptResult;
 
 import java.time.Instant;
 

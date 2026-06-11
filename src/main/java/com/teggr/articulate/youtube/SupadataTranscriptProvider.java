@@ -12,6 +12,8 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
 import com.teggr.articulate.exception.TranscriptNotFoundException;
+import com.teggr.articulate.service.transcripts.TranscriptProvider;
+import com.teggr.articulate.service.transcripts.TranscriptResult;
 
 import java.time.Duration;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.teggr.articulate.youtube;
+package com.teggr.articulate.service.transcripts;
 
 import java.util.Optional;
 

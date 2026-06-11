@@ -1,8 +1,11 @@
-package com.teggr.articulate.youtube;
+package com.teggr.articulate.service.transcripts;
 
 import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import com.teggr.articulate.service.transcripts.FileSystemTranscriptRepository;
+import com.teggr.articulate.service.transcripts.TranscriptResult;
 
 import java.nio.file.Path;
 import java.util.Optional;

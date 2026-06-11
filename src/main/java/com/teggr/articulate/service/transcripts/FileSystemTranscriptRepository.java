@@ -1,4 +1,4 @@
-package com.teggr.articulate.youtube;
+package com.teggr.articulate.service.transcripts;
 
 import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

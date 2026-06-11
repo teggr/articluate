@@ -1,4 +1,4 @@
-package com.teggr.articulate.service;
+package com.teggr.articulate.service.transcripts;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -6,9 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.teggr.articulate.youtube.TranscriptProvider;
-import com.teggr.articulate.youtube.TranscriptRepository;
-import com.teggr.articulate.youtube.TranscriptResult;
+import com.teggr.articulate.service.transcripts.TranscriptIdGenerator;
+import com.teggr.articulate.service.transcripts.TranscriptProvider;
+import com.teggr.articulate.service.transcripts.TranscriptRepository;
+import com.teggr.articulate.service.transcripts.TranscriptResult;
+import com.teggr.articulate.service.transcripts.TranscriptService;
 
 import java.time.Instant;
 import java.util.Optional;

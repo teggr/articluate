@@ -8,7 +8,9 @@ import com.teggr.articulate.ai.BlogGenerationService;
 import com.teggr.articulate.model.ArticleRequest;
 import com.teggr.articulate.model.ArticleResponse;
 import com.teggr.articulate.model.BlogContent;
-import com.teggr.articulate.youtube.TranscriptResult;
+import com.teggr.articulate.service.transcripts.TranscriptCleaningService;
+import com.teggr.articulate.service.transcripts.TranscriptResult;
+import com.teggr.articulate.service.transcripts.TranscriptService;
 
 @Service
 @RequiredArgsConstructor
