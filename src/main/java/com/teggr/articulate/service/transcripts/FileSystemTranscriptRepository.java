@@ -17,9 +17,9 @@ public class FileSystemTranscriptRepository implements TranscriptRepository {
     private final ObjectMapper objectMapper;
 
     public FileSystemTranscriptRepository(
-            @Value("${articulate.transcript-repository.dir:.data}") String repositoryDirPath,
+            @Value("${articulate.data.dir:.data}") String dataDirPath,
             ObjectMapper objectMapper) {
-        this.repositoryDir = Path.of(repositoryDirPath);
+        this.repositoryDir = Path.of(dataDirPath, "transcripts");
         this.objectMapper = objectMapper;
     }
 
