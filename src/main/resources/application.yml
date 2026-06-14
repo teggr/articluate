@@ -25,7 +25,7 @@ articulate:
     max-transcript-chars: 0
   security:
     remember-me:
-      key: ${ARTICULATE_REMEMBER_ME_KEY:${SPRING_SECURITY_USER_PASSWORD:change-me}}
+      key: ${ARTICULATE_REMEMBER_ME_KEY:}
   data:
     dir: .data
 

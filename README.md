@@ -54,7 +54,7 @@ cd backend && mvn spring-boot:run
 Then open `http://localhost:8080/` for the public landing page.
 The article generator UI is at `http://localhost:8080/generate` and requires authentication.
 Spring Security will require authentication for `/generate` and API endpoints using the configured username and password.
-If the remember-me box is selected at login, the session stays signed in for 30 days.
+If the remember-me box is selected at login, the session stays signed in for 30 days. Set `ARTICULATE_REMEMBER_ME_KEY` to keep remember-me tokens valid across application restarts.
 
 ## Browser bookmarklet (production)
 

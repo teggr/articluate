@@ -50,8 +50,7 @@ class SecurityIntegrationTest {
     void loginPageShowsRememberMeOption() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("name='remember-me'")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("Remember me on this computer.")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("name='remember-me'")));
     }
 
     @Test

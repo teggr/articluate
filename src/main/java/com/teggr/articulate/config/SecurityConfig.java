@@ -1,6 +1,7 @@
 package com.teggr.articulate.config;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,15 +19,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String DEFAULT_ROLE = "USER";
     private static final int REMEMBER_ME_VALIDITY_SECONDS = 30 * 24 * 60 * 60;
 
     @Bean
     UserDetailsService userDetailsService(
             @Value("${spring.security.user.name:articulate}") String username,
             @Value("${spring.security.user.password:change-me}") String password,
-            @Value("${spring.security.user.roles:USER}") List<String> configuredRoles) {
-        String[] roles = configuredRoles == null || configuredRoles.isEmpty()
-                ? new String[]{"USER"}
+            @Value("${spring.security.user.roles:" + DEFAULT_ROLE + "}") List<String> configuredRoles) {
+        String[] roles = configuredRoles.isEmpty()
+                ? new String[]{DEFAULT_ROLE}
                 : configuredRoles.toArray(String[]::new);
 
         return new InMemoryUserDetailsManager(
@@ -41,7 +43,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             UserDetailsService userDetailsService,
-            @Value("${articulate.security.remember-me.key:${SPRING_SECURITY_USER_PASSWORD:change-me}}")
+            @Value("${articulate.security.remember-me.key:}")
             String rememberMeKey) throws Exception {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
         requestCache.setMatchingRequestParameterName(null);
@@ -56,7 +58,7 @@ public class SecurityConfig {
                 .requestCache(cache -> cache.requestCache(requestCache))
                 .formLogin(form -> form.defaultSuccessUrl("/articles"))
                 .rememberMe(rememberMe -> rememberMe
-                        .key(rememberMeKey)
+                        .key(resolveRememberMeKey(rememberMeKey))
                         .tokenValiditySeconds(REMEMBER_ME_VALIDITY_SECONDS)
                         .userDetailsService(userDetailsService))
                 .logout(logout -> logout.logoutSuccessUrl("/"));
@@ -69,5 +71,12 @@ public class SecurityConfig {
             return password;
         }
         return "{noop}" + password;
+    }
+
+    private static String resolveRememberMeKey(String rememberMeKey) {
+        if (rememberMeKey != null && !rememberMeKey.isBlank()) {
+            return rememberMeKey;
+        }
+        return UUID.randomUUID().toString();
     }
 }
