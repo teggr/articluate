@@ -79,6 +79,7 @@ jobs:
           SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
           SPRING_SECURITY_USER_NAME: ${{ secrets.SPRING_SECURITY_USER_NAME }}
           SPRING_SECURITY_USER_PASSWORD: ${{ secrets.SPRING_SECURITY_USER_PASSWORD }}
+          ARTICULATE_REMEMBER_ME_KEY: ${{ secrets.ARTICULATE_REMEMBER_ME_KEY }}
         run: |
           mkdir -p .deploy4j
           cat > .deploy4j/secrets << "EOF"
@@ -90,6 +91,7 @@ jobs:
           SUPADATA_API_KEY=$SUPADATA_API_KEY
           SPRING_SECURITY_USER_NAME=$SPRING_SECURITY_USER_NAME
           SPRING_SECURITY_USER_PASSWORD=$SPRING_SECURITY_USER_PASSWORD
+          ARTICULATE_REMEMBER_ME_KEY=$ARTICULATE_REMEMBER_ME_KEY
           EOF
 
       - name: Deploy application with deploy4j via jbang
@@ -101,6 +103,7 @@ jobs:
           SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
           SPRING_SECURITY_USER_NAME: ${{ secrets.SPRING_SECURITY_USER_NAME }}
           SPRING_SECURITY_USER_PASSWORD: ${{ secrets.SPRING_SECURITY_USER_PASSWORD }}
+          ARTICULATE_REMEMBER_ME_KEY: ${{ secrets.ARTICULATE_REMEMBER_ME_KEY }}
         run: jbang --java 25 dev.deploy4j:deploy4j-cli:0.0.6 deploy --version ${{ steps.set_release_version.outputs.release_version }}
 
       - name: Tag release
