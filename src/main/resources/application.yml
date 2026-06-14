@@ -23,6 +23,9 @@ articulate:
   ai:
     # 0 disables capping. Set e.g. 12000 to test whether large prompts trigger provider 500s.
     max-transcript-chars: 0
+  security:
+    remember-me:
+      key: ${ARTICULATE_REMEMBER_ME_KEY:${SPRING_SECURITY_USER_PASSWORD:change-me}}
   data:
     dir: .data
 

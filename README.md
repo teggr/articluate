@@ -36,6 +36,7 @@ GEMINI_API_KEY=your-key-here \
 SUPADATA_API_KEY=your-key-here \
 SPRING_SECURITY_USER_NAME=articulate \
 SPRING_SECURITY_USER_PASSWORD=change-me \
+ARTICULATE_REMEMBER_ME_KEY=replace-with-a-stable-secret \
 mvn spring-boot:run
 ```
 
@@ -46,12 +47,14 @@ export GEMINI_API_KEY=your-key-here
 export SUPADATA_API_KEY=your-key-here
 export SPRING_SECURITY_USER_NAME=articulate
 export SPRING_SECURITY_USER_PASSWORD=change-me
+export ARTICULATE_REMEMBER_ME_KEY=replace-with-a-stable-secret
 cd backend && mvn spring-boot:run
 ```
 
 Then open `http://localhost:8080/` for the public landing page.
 The article generator UI is at `http://localhost:8080/generate` and requires authentication.
 Spring Security will require authentication for `/generate` and API endpoints using the configured username and password.
+If the remember-me box is selected at login, the session stays signed in for 30 days.
 
 ## Browser bookmarklet (production)
 
@@ -103,3 +106,4 @@ Required GitHub secrets for the workflow:
 - `SUPADATA_API_KEY`
 - `SPRING_SECURITY_USER_NAME`
 - `SPRING_SECURITY_USER_PASSWORD`
+- `ARTICULATE_REMEMBER_ME_KEY`

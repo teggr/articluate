@@ -14,7 +14,11 @@ import com.teggr.articulate.web.LandingController;
 import com.teggr.articulate.youtube.YouTubeVideoIdExtractor;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -40,6 +44,14 @@ class SecurityIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("landingView"))
                 .andExpect(model().attribute("loginUrl", "/login"));
+    }
+
+    @Test
+    void loginPageShowsRememberMeOption() throws Exception {
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("name='remember-me'")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Remember me on this computer.")));
     }
 
     @Test
@@ -80,5 +92,18 @@ class SecurityIntegrationTest {
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isFound())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/login")));
+    }
+
+    @Test
+    void loginWithRememberMeSetsPersistentCookie() throws Exception {
+        mockMvc.perform(post("/login")
+                        .with(csrf())
+                        .param("username", "articulate")
+                        .param("password", "change-me")
+                        .param("remember-me", "on"))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", "/articles"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().maxAge("remember-me", 30 * 24 * 60 * 60));
     }
 }
