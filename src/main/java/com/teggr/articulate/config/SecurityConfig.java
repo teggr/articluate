@@ -56,7 +56,11 @@ public class SecurityConfig {
                 .requestMatchers("/articles/**").authenticated()
                         .anyRequest().authenticated())
                 .requestCache(cache -> cache.requestCache(requestCache))
-                .formLogin(form -> form.defaultSuccessUrl("/articles"))
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .failureUrl("/login?error=true")
+                        .permitAll()
+                        .defaultSuccessUrl("/articles"))
                 .rememberMe(rememberMe -> rememberMe
                         .key(resolveRememberMeKey(rememberMeKey))
                         .tokenValiditySeconds(REMEMBER_ME_VALIDITY_SECONDS)
