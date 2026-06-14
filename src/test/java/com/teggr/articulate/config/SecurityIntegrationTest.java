@@ -11,6 +11,7 @@ import com.teggr.articulate.articles.ArticleService;
 import com.teggr.articulate.articles.web.ArticlesController;
 import com.teggr.articulate.articles.web.GenerateController;
 import com.teggr.articulate.web.LandingController;
+import com.teggr.articulate.web.LoginController;
 import com.teggr.articulate.youtube.YouTubeVideoIdExtractor;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest({LandingController.class, GenerateController.class, ArticlesController.class})
+@WebMvcTest({LandingController.class, LoginController.class, GenerateController.class, ArticlesController.class})
 @Import(SecurityConfig.class)
 class SecurityIntegrationTest {
 

@@ -326,6 +326,47 @@ pre {
 }
 
 /* =========================
+   Login Page
+   ========================= */
+.login-page .page {
+  max-width: 540px;
+}
+
+.login-page form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.login-page label {
+  font-weight: 600;
+}
+
+.login-page input[type="text"],
+.login-page input[type="password"] {
+  width: 100%;
+  padding: 0.65rem var(--space-2);
+}
+
+.login-page .remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 500;
+}
+
+.login-page .form-message {
+  margin-bottom: var(--space-2);
+}
+
+.login-page .form-message.error {
+  color: #8d1f1f;
+}
+
+.login-page .form-message.success {
+  color: #1f6f3f;
+}
+
+/* =========================
    Detail Page
    ========================= */
 .article-detail-page .meta {
